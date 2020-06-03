@@ -1,40 +1,41 @@
 const mongoose = require('mongoose');
+
 const UsuarioSchema = new mongoose.Schema({
   nome: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   senha: {
     type: String,
-    required: true
+    required: true,
   },
   telefones: [
-      {
-          ddd: {
-              type: String,
-              required: true,
-              length: 2              
-          },
-          numero: {
-              type: String,
-              required: true,
-              min: 8,
-              max: 9
-          }
-      }
+    {
+      ddd: {
+        type: String,
+        required: true,
+        length: 2,
+      },
+      numero: {
+        type: String,
+        required: true,
+        min: 8,
+        max: 9,
+      },
+    },
   ],
   data_criacao: {
-    type: Date
+    type: Date,
   },
   data_atualizacao: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
-module.exports = Usuario = mongoose.model('usuario', UsuarioSchema);
+module.exports = mongoose.model('usuario', UsuarioSchema);

@@ -1,4 +1,5 @@
 const express = require('express');
+
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -31,16 +32,18 @@ router.post(
     check('email', 'Por favor, inclua um e-mail valido').isEmail(),
     check(
       'senha',
-      'Senha deve conter no minimo 6 caracteres'
-    ).isLength({ min: 6 })
+      'Senha deve conter no minimo 6 caracteres',
+    ).isLength({ min: 6 }),
   ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ mensagem: errors.array() });
+      return res.status(400).json({ mensagem: 'Usuário e/ou senha inválidos' });
     }
 
-    const { nome, email, senha, telefones } = req.body;    
+    const {
+      nome, email, senha, telefones,
+    } = req.body;
 
     try {
       let user = await User.findOne({ email });
@@ -53,9 +56,9 @@ router.post(
 
       user = new User({
         nome,
-        email,        
+        email,
         senha,
-        telefones
+        telefones,
       });
 
       const salt = await bcrypt.genSalt(10);
@@ -69,36 +72,32 @@ router.post(
 
       const payload = {
         user: {
-          id: user.id
-        }
+          id: user.id,
+        },
       };
 
       jwt.sign(
         payload,
         config.get('jwtSecret'),
-        { expiresIn: 360000 },
+        { expiresIn: '1800000' },
         (err, token) => {
           if (err) throw err;
-
           const jsonReturn = {
-            'id': user.id,
-            'nome': user.nome,
-            'email': user.email,        
-            'data_criacao': user.data_criacao,
-            'data_atualiacao': user.data_atualizacao,
-            'ultimo_login': user.ultimo_login,            
-            'token': token
-          }
-          res.json(jsonReturn);
-          console.log('token foi gerado com sucesso');
-        }
+            id: user.id,
+            nome: user.nome,
+            email: user.email,
+            data_criacao: user.data_criacao,
+            data_atualiacao: user.data_atualizacao,
+            ultimo_login: user.ultimo_login,
+            token,
+          };
+          return res.json(jsonReturn);
+        },
       );
-
     } catch (err) {
-      console.error(err.message);
-      res.status(500).json({'mensagem':'Ocorreu um erro: ' + err.message});
+      return res.status(500).json({ mensagem: `Ocorreu um erro: ${err.message}` });
     }
-  }
+  },
 );
 
 module.exports = router;

@@ -1,0 +1,4 @@
+{
+    "mongoURI": "mongodb://admin:Abcd.1234@ds033559.mlab.com:33559/testtechmahindra",
+    "jwtSecret": "minha_super_chave_secreta"  
+}     
