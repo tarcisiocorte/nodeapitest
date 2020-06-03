@@ -11,7 +11,7 @@ connectDB();
 app.use(express.json({ extended: false }));
 app.use(cors());
 
-app.get('/', (req, res) => res.send('API Running'));
+app.get('/', (req, res) => res.send('API feita para avaliação esta em execução'));
 
 // Define Routes
 app.use('/api/sign_up', require('./routes/api/usuarios'));
